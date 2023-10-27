@@ -12,7 +12,8 @@ class OrderController extends GetxController {
   late List pendingOrders = [];
   late List deliveredOrders = [];
   late List processingOrders = [];
-  late List pickedUpOrders = [];
+  late List assignedOrders = [];
+  late List inTransitOrders = [];
 
   Future<void> getAllMyDeliveredOrders(String token) async {
     const profileLink = "https://f-bazaar.com/order/get_my_delivered_order/";
@@ -50,6 +51,24 @@ class OrderController extends GetxController {
     }
   }
 
+  Future<void> getAllInTransitOrders(String token) async {
+    const profileLink = "https://f-bazaar.com/order/get_all_in_transit_orders/";
+    var link = Uri.parse(profileLink);
+    http.Response response = await http.get(link, headers: {
+      "Content-Type": "application/x-www-form-urlencoded",
+      "Authorization": "Token $token"
+    });
+    if (response.statusCode == 200) {
+      var jsonData = jsonDecode(response.body);
+      inTransitOrders.assignAll(jsonData);
+      update();
+    } else {
+      if (kDebugMode) {
+        print(response.body);
+      }
+    }
+  }
+
   Future<void> getAllProcessingOrders(String token) async {
     const profileLink = "https://f-bazaar.com/order/processing_orders/";
     var link = Uri.parse(profileLink);
@@ -68,8 +87,9 @@ class OrderController extends GetxController {
     }
   }
 
-  Future<void> getAllPickedUpOrders(String token) async {
-    const profileLink = "https://f-bazaar.com/order/picked_up_orders/";
+  Future<void> getAllMyAssignedOrders(String token) async {
+    const profileLink =
+        "https://f-bazaar.com/order/get_all_drivers_assigned_orders/";
     var link = Uri.parse(profileLink);
     http.Response response = await http.get(link, headers: {
       "Content-Type": "application/x-www-form-urlencoded",
@@ -77,7 +97,7 @@ class OrderController extends GetxController {
     });
     if (response.statusCode == 200) {
       var jsonData = jsonDecode(response.body);
-      pickedUpOrders.assignAll(jsonData);
+      assignedOrders.assignAll(jsonData);
 
       update();
     } else {
@@ -262,6 +282,63 @@ class OrderController extends GetxController {
     }
   }
 
+  Future<void> updateOrderToInTransit(
+      String id,
+      String token,
+      String cartId,
+      String quantity,
+      String price,
+      String category,
+      String size,
+      String paymentMethod,
+      String dropOffLat,
+      String dropOffLng,
+      String deliveryMethod,
+      String unCode,
+      String orderingUser,
+      String driversLat,
+      String driversLng) async {
+    final requestUrl = "https://f-bazaar.com/order/order/$id/update/";
+    final myLink = Uri.parse(requestUrl);
+    final response = await http.put(myLink, headers: {
+      "Content-Type": "application/x-www-form-urlencoded",
+      'Accept': 'application/json',
+      "Authorization": "Token $token"
+    }, body: {
+      "cart": cartId,
+      "quantity": quantity,
+      "category": category,
+      "size": size,
+      "payment_method": paymentMethod,
+      "delivery_method": deliveryMethod,
+      "drop_off_location_lat": dropOffLat,
+      "drop_off_location_lng": dropOffLng,
+      "price": price,
+      "ordered": "True",
+      "order_status": "In Transit",
+      "unique_order_code": unCode,
+    });
+    if (response.statusCode == 200) {
+      addDriversCurrentLocation(
+          token, id, orderingUser, driversLat, driversLng);
+      Get.snackbar("Hurray 😀", "order moved to In-Transit",
+          colorText: defaultTextColor1,
+          snackPosition: SnackPosition.TOP,
+          backgroundColor: newDefault,
+          duration: const Duration(seconds: 5));
+
+      update();
+    } else {
+      Get.snackbar(
+        "Order Error",
+        "Something went wrong",
+        duration: const Duration(seconds: 5),
+        colorText: defaultTextColor1,
+        backgroundColor: warning,
+      );
+    }
+  }
+
 //   add to items cleared
   Future<void> clearOrder(
     String token,
@@ -278,7 +355,6 @@ class OrderController extends GetxController {
     if (response.statusCode == 201) {
       update();
     } else {
-      print(response.body);
       Get.snackbar(
         "Order Error",
         "Something went wrong",
@@ -305,7 +381,6 @@ class OrderController extends GetxController {
     if (response.statusCode == 201) {
       update();
     } else {
-      print(response.body);
       Get.snackbar(
         "Order Error",
         "Something went wrong",
@@ -328,6 +403,57 @@ class OrderController extends GetxController {
       "Authorization": "Token $token"
     }, body: {
       "order_item": orderItem,
+    });
+    if (response.statusCode == 201) {
+      update();
+    } else {
+      Get.snackbar(
+        "Order Error",
+        "Something went wrong",
+        duration: const Duration(seconds: 5),
+        colorText: defaultTextColor1,
+        backgroundColor: warning,
+      );
+    }
+  }
+
+  Future<void> addToInTransit(String token, String orderItem) async {
+    const requestUrl = "https://f-bazaar.com/order/add_order_to_in_transit/";
+    final myLink = Uri.parse(requestUrl);
+    final response = await http.post(myLink, headers: {
+      "Content-Type": "application/x-www-form-urlencoded",
+      'Accept': 'application/json',
+      "Authorization": "Token $token"
+    }, body: {
+      "order_item": orderItem,
+    });
+    if (response.statusCode == 201) {
+      update();
+    } else {
+      Get.snackbar(
+        "Order Error",
+        "Something went wrong",
+        duration: const Duration(seconds: 5),
+        colorText: defaultTextColor1,
+        backgroundColor: warning,
+      );
+    }
+  }
+
+  Future<void> addDriversCurrentLocation(String token, String orderItem,
+      String orderingUser, String driversLat, String driversLng) async {
+    final requestUrl =
+        "https://f-bazaar.com/order/add_drivers_current_location/$orderItem/";
+    final myLink = Uri.parse(requestUrl);
+    final response = await http.post(myLink, headers: {
+      "Content-Type": "application/x-www-form-urlencoded",
+      'Accept': 'application/json',
+      "Authorization": "Token $token"
+    }, body: {
+      "order_item": orderItem,
+      "user": orderingUser,
+      "drivers_lat": driversLat,
+      "drivers_lng": driversLng,
     });
     if (response.statusCode == 201) {
       update();

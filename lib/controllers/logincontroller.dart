@@ -68,7 +68,7 @@ class LoginController extends GetxController {
         storage.write("token", userToken);
         Get.offAll(() => const MainHome());
       } else {
-        Get.snackbar("Sorry 😢", "you are a driver",
+        Get.snackbar("Sorry 😢", "you are not a driver",
             duration: const Duration(seconds: 5),
             snackPosition: SnackPosition.BOTTOM,
             backgroundColor: warning,

@@ -59,133 +59,139 @@ class _LoginViewState extends State<LoginView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Padding(
-          padding: const EdgeInsets.all(18.0),
-          child: Form(
-            key: _formKey,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                TextFormField(
-                  cursorColor: defaultTextColor2,
-                  controller: _emailController,
-                  focusNode: _emailFocusNode,
-                  decoration: InputDecoration(
-                      labelText: "Email",
-                      labelStyle: const TextStyle(color: defaultTextColor2),
-                      focusColor: defaultTextColor2,
-                      fillColor: defaultTextColor2,
-                      focusedBorder: OutlineInputBorder(
-                          borderSide: const BorderSide(
-                              color: defaultTextColor2, width: 2),
-                          borderRadius: BorderRadius.circular(12)),
-                      border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(12))),
-                  // cursorColor: Colors.black,
-                  // style: const TextStyle(color: Colors.black),
-                  keyboardType: TextInputType.emailAddress,
-                  textInputAction: TextInputAction.next,
-                  validator: (value) {
-                    if (value!.isEmpty) {
-                      return "Enter username";
-                    } else {
-                      return null;
-                    }
-                  },
-                ),
-                const SizedBox(height: 20),
-                TextFormField(
-                  controller: _passwordController,
-                  focusNode: _passwordFocusNode,
-                  cursorColor: defaultTextColor2,
-                  decoration: InputDecoration(
-                      suffixIcon: IconButton(
-                        onPressed: () {
-                          setState(() {
-                            isObscured = !isObscured;
-                          });
-                        },
-                        icon: Icon(
-                          isObscured ? Icons.visibility : Icons.visibility_off,
-                          color: defaultTextColor2,
-                        ),
-                      ),
-                      labelText: "Password",
-                      labelStyle: const TextStyle(color: defaultTextColor2),
-                      focusColor: defaultTextColor2,
-                      fillColor: defaultTextColor2,
-                      focusedBorder: OutlineInputBorder(
-                          borderSide: const BorderSide(
-                              color: defaultTextColor2, width: 2),
-                          borderRadius: BorderRadius.circular(12)),
-                      border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(12))),
-                  // cursorColor: Colors.black,
-                  // style: const TextStyle(color: Colors.black),
-                  keyboardType: TextInputType.visiblePassword,
-                  textInputAction: TextInputAction.done,
-                  obscureText: isObscured,
-                  validator: (value) {
-                    if (value!.isEmpty) {
-                      return "Enter password";
-                    } else {
-                      return null;
-                    }
-                  },
-                ),
-                const SizedBox(height: 20),
-                InkWell(
-                    onTap: () async {
-                      await _launchInBrowser();
-                    },
-                    child: const Text(
-                      "Forgot Password",
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                      ),
-                    )),
-                const SizedBox(
-                  height: 25,
-                ),
-                const SizedBox(height: 20),
-                isPosting
-                    ? const LoadingUi()
-                    : RawMaterialButton(
-                        fillColor: newButton,
-                        shape: RoundedRectangleBorder(
+        body: SafeArea(
+      child: ListView(
+        children: [
+          const SizedBox(height: 20),
+          Image.asset("assets/images/character-3.png"),
+          Padding(
+            padding: const EdgeInsets.all(18.0),
+            child: Form(
+              key: _formKey,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  TextFormField(
+                    cursorColor: defaultTextColor2,
+                    controller: _emailController,
+                    focusNode: _emailFocusNode,
+                    decoration: InputDecoration(
+                        labelText: "Email",
+                        labelStyle: const TextStyle(color: defaultTextColor2),
+                        focusColor: defaultTextColor2,
+                        fillColor: defaultTextColor2,
+                        focusedBorder: OutlineInputBorder(
+                            borderSide: const BorderSide(
+                                color: defaultTextColor2, width: 2),
                             borderRadius: BorderRadius.circular(12)),
-                        onPressed: () {
-                          _startPosting();
-                          FocusScopeNode currentFocus = FocusScope.of(context);
-
-                          if (!currentFocus.hasPrimaryFocus) {
-                            currentFocus.unfocus();
-                          }
-                          if (!_formKey.currentState!.validate()) {
-                            return;
-                          } else {
-                            controller.loginUser(
-                              _emailController.text.trim(),
-                              _passwordController.text.trim(),
-                            );
-                          }
-                        },
-                        child: const Text(
-                          "Login",
-                          style: TextStyle(
-                              color: defaultTextColor1,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 20),
+                        border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12))),
+                    // cursorColor: Colors.black,
+                    // style: const TextStyle(color: Colors.black),
+                    keyboardType: TextInputType.emailAddress,
+                    textInputAction: TextInputAction.next,
+                    validator: (value) {
+                      if (value!.isEmpty) {
+                        return "Enter username";
+                      } else {
+                        return null;
+                      }
+                    },
+                  ),
+                  const SizedBox(height: 20),
+                  TextFormField(
+                    controller: _passwordController,
+                    focusNode: _passwordFocusNode,
+                    cursorColor: defaultTextColor2,
+                    decoration: InputDecoration(
+                        suffixIcon: IconButton(
+                          onPressed: () {
+                            setState(() {
+                              isObscured = !isObscured;
+                            });
+                          },
+                          icon: Icon(
+                            isObscured
+                                ? Icons.visibility
+                                : Icons.visibility_off,
+                            color: defaultTextColor2,
+                          ),
                         ),
-                      ),
-              ],
+                        labelText: "Password",
+                        labelStyle: const TextStyle(color: defaultTextColor2),
+                        focusColor: defaultTextColor2,
+                        fillColor: defaultTextColor2,
+                        focusedBorder: OutlineInputBorder(
+                            borderSide: const BorderSide(
+                                color: defaultTextColor2, width: 2),
+                            borderRadius: BorderRadius.circular(12)),
+                        border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12))),
+                    // cursorColor: Colors.black,
+                    // style: const TextStyle(color: Colors.black),
+                    keyboardType: TextInputType.visiblePassword,
+                    textInputAction: TextInputAction.done,
+                    obscureText: isObscured,
+                    validator: (value) {
+                      if (value!.isEmpty) {
+                        return "Enter password";
+                      } else {
+                        return null;
+                      }
+                    },
+                  ),
+                  const SizedBox(height: 20),
+                  InkWell(
+                      onTap: () async {
+                        await _launchInBrowser();
+                      },
+                      child: const Text(
+                        "Forgot Password",
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                        ),
+                      )),
+                  const SizedBox(
+                    height: 25,
+                  ),
+                  const SizedBox(height: 20),
+                  isPosting
+                      ? const LoadingUi()
+                      : RawMaterialButton(
+                          fillColor: newButton,
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12)),
+                          onPressed: () {
+                            _startPosting();
+                            FocusScopeNode currentFocus =
+                                FocusScope.of(context);
+
+                            if (!currentFocus.hasPrimaryFocus) {
+                              currentFocus.unfocus();
+                            }
+                            if (!_formKey.currentState!.validate()) {
+                              return;
+                            } else {
+                              controller.loginUser(
+                                _emailController.text.trim(),
+                                _passwordController.text.trim(),
+                              );
+                            }
+                          },
+                          child: const Text(
+                            "Login",
+                            style: TextStyle(
+                                color: defaultTextColor1,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 20),
+                          ),
+                        ),
+                ],
+              ),
             ),
           ),
-        ),
-      ],
+        ],
+      ),
     ));
   }
 }

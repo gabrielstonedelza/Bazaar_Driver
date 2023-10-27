@@ -1,19 +1,24 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
+import '../../../controllers/mapcontroller.dart';
 import '../../../controllers/ordercontroller.dart';
 import '../../../statics/appcolors.dart';
+import '../mapcomponent.dart';
 
-class PickedUpOrders extends StatefulWidget {
-  const PickedUpOrders({super.key});
+class InTransitOrders extends StatefulWidget {
+  const InTransitOrders({super.key});
 
   @override
-  State<PickedUpOrders> createState() => _PickedUpOrdersState();
+  State<InTransitOrders> createState() => _InTransitOrdersState();
 }
 
-class _PickedUpOrdersState extends State<PickedUpOrders> {
+class _InTransitOrdersState extends State<InTransitOrders> {
   final OrderController orderController = Get.find();
+  final MapController mapController = Get.find();
   var items;
 
   final storage = GetStorage();
@@ -24,6 +29,7 @@ class _PickedUpOrdersState extends State<PickedUpOrders> {
     if (storage.read("token") != null) {
       uToken = storage.read("token");
     }
+
     super.initState();
   }
 
@@ -31,7 +37,7 @@ class _PickedUpOrdersState extends State<PickedUpOrders> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-            title: const Text("Picked Up Orders"),
+            title: const Text("In Transit Orders"),
             leading: IconButton(
               onPressed: () {
                 Get.back();
@@ -41,11 +47,11 @@ class _PickedUpOrdersState extends State<PickedUpOrders> {
             )),
         body: GetBuilder<OrderController>(builder: (controller) {
           return ListView.builder(
-              itemCount: controller.pickedUpOrders != null
-                  ? controller.pickedUpOrders.length
+              itemCount: controller.inTransitOrders != null
+                  ? controller.inTransitOrders.length
                   : 0,
               itemBuilder: (context, index) {
-                items = controller.pickedUpOrders[index];
+                items = controller.inTransitOrders[index];
                 return Card(
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10)),
@@ -110,58 +116,44 @@ class _PickedUpOrdersState extends State<PickedUpOrders> {
                                           fontWeight: FontWeight.bold,
                                           fontSize: 15)),
                                   const SizedBox(height: 10),
+                                  RawMaterialButton(
+                                    fillColor: newButton,
+                                    shape: RoundedRectangleBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(12)),
+                                    onPressed: () {
+                                      Get.to(
+                                        () => MapComponent(
+                                          cLat:
+                                              controller.inTransitOrders[index]
+                                                  ['drop_off_location_lat'],
+                                          cLng:
+                                              controller.inTransitOrders[index]
+                                                  ['drop_off_location_lng'],
+                                          orderItem: controller
+                                              .inTransitOrders[index]['id']
+                                              .toString(),
+                                          orderingUser: controller
+                                              .inTransitOrders[index]['user']
+                                              .toString(),
+                                        ),
+                                      );
+                                    },
+                                    child: const Padding(
+                                      padding: EdgeInsets.all(8.0),
+                                      child: Text(
+                                        "Show route to customer on map",
+                                        style: TextStyle(
+                                            color: defaultTextColor1,
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 12),
+                                      ),
+                                    ),
+                                  )
                                 ],
                               ),
                             ),
                             const SizedBox(width: 10),
-                            Expanded(
-                                child: Card(
-                              shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(12)),
-                              color: muted[300],
-                              child: Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Center(
-                                  child: TextButton(
-                                    child: const Text("Add to Processing",
-                                        style: TextStyle(
-                                            color: defaultTextColor2,
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: 15)),
-                                    onPressed: () {
-                                      controller.updateOrderToDelivered(
-                                          controller.pickedUpOrders[index]['id']
-                                              .toString(),
-                                          uToken,
-                                          controller.pickedUpOrders[index]
-                                                  ['cart']
-                                              .toString(),
-                                          controller.pickedUpOrders[index]
-                                                  ['quantity']
-                                              .toString(),
-                                          controller.pickedUpOrders[index]
-                                                  ['price']
-                                              .toString(),
-                                          controller.pickedUpOrders[index]
-                                              ['category'],
-                                          controller.pickedUpOrders[index]
-                                                  ['size']
-                                              .toString(),
-                                          controller.pickedUpOrders[index]
-                                              ['payment_method'],
-                                          controller.pickedUpOrders[index]
-                                              ['drop_off_location_lat'],
-                                          controller.pickedUpOrders[index]
-                                              ['drop_off_location_lng'],
-                                          controller.pickedUpOrders[index]
-                                              ['delivery_method'],
-                                          controller.pickedUpOrders[index]
-                                              ['unique_order_code']);
-                                    },
-                                  ),
-                                ),
-                              ),
-                            ))
                           ],
                         ),
                       ],

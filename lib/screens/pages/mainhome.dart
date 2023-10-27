@@ -14,6 +14,7 @@ import '../../controllers/profilecontroller.dart';
 import '../../statics/appcolors.dart';
 import '../../widgets/components/ordercomponent.dart';
 import '../../widgets/components/storecomponent.dart';
+import 'notifications.dart';
 
 class MainHome extends StatefulWidget {
   const MainHome({super.key});
@@ -47,8 +48,9 @@ class _MainHomeState extends State<MainHome> {
     orderController.getAllMyDeliveredOrders(uToken);
     orderController.getAllPendingOrders(uToken);
     orderController.getAllProcessingOrders(uToken);
-    orderController.getAllPickedUpOrders(uToken);
+    orderController.getAllMyAssignedOrders(uToken);
     orderController.getAllDeliveredOrders(uToken);
+    orderController.getAllInTransitOrders(uToken);
     notificationController.getAllTriggeredNotifications(uToken);
     notificationController.getAllUnReadNotifications(uToken);
     notificationController.getAllNotifications(uToken);
@@ -57,8 +59,9 @@ class _MainHomeState extends State<MainHome> {
       orderController.getAllMyDeliveredOrders(uToken);
       orderController.getAllPendingOrders(uToken);
       orderController.getAllProcessingOrders(uToken);
-      orderController.getAllPickedUpOrders(uToken);
+      orderController.getAllMyAssignedOrders(uToken);
       orderController.getAllDeliveredOrders(uToken);
+      orderController.getAllInTransitOrders(uToken);
       notificationController.getAllTriggeredNotifications(uToken);
       notificationController.getAllUnReadNotifications(uToken);
       notificationController.getAllNotifications(uToken);
@@ -129,7 +132,7 @@ class _MainHomeState extends State<MainHome> {
                 ),
                 GestureDetector(
                   onTap: () {
-                    Get.to(() => const StoreComponent());
+                    Get.to(() => const Notifications());
                   },
                   child: Card(
                       shape: RoundedRectangleBorder(
@@ -140,11 +143,11 @@ class _MainHomeState extends State<MainHome> {
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Icon(Icons.storefront, size: 50),
+                            Icon(Icons.notifications, size: 50),
                             SizedBox(
                               height: 10,
                             ),
-                            Text("Store",
+                            Text("Notifications",
                                 style: TextStyle(fontWeight: FontWeight.bold))
                           ],
                         ),

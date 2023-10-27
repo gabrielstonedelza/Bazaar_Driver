@@ -5,8 +5,9 @@ import 'package:get/get.dart';
 import '../../controllers/ordercontroller.dart';
 import '../../statics/appcolors.dart';
 import 'orders/delivered.dart';
+import 'orders/intransit.dart';
 import 'orders/pending.dart';
-import 'orders/pickedup.dart';
+import 'orders/assignedOrders.dart';
 import 'orders/processing.dart';
 
 class OrderComponent extends StatefulWidget {
@@ -109,7 +110,7 @@ class _OrderComponentState extends State<OrderComponent> {
                 children: [
                   GestureDetector(
                     onTap: () {
-                      Get.to(() => const PickedUpOrders());
+                      Get.to(() => const AssignedOrders());
                     },
                     child: Card(
                         shape: RoundedRectangleBorder(
@@ -124,13 +125,13 @@ class _OrderComponentState extends State<OrderComponent> {
                               const SizedBox(
                                 height: 10,
                               ),
-                              const Text("Picked Up",
+                              const Text("Assigned",
                                   style:
                                       TextStyle(fontWeight: FontWeight.bold)),
                               const SizedBox(
                                 height: 10,
                               ),
-                              Text("(${controller.pickedUpOrders.length})",
+                              Text("(${controller.assignedOrders.length})",
                                   style: const TextStyle(
                                       fontWeight: FontWeight.bold))
                             ],
@@ -167,6 +168,76 @@ class _OrderComponentState extends State<OrderComponent> {
                           ),
                         )),
                   ),
+                ],
+              ),
+            ),
+            const Divider(),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  GestureDetector(
+                    onTap: () {
+                      Get.to(() => const InTransitOrders());
+                    },
+                    child: Card(
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10)),
+                        child: SizedBox(
+                          height: 150,
+                          width: 150,
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Image.asset("assets/images/box-truck.png",
+                                  width: 50, height: 50),
+                              const SizedBox(
+                                height: 10,
+                              ),
+                              const Text("In Transit",
+                                  style:
+                                      TextStyle(fontWeight: FontWeight.bold)),
+                              const SizedBox(
+                                height: 10,
+                              ),
+                              Text("(${controller.inTransitOrders.length})",
+                                  style: const TextStyle(
+                                      fontWeight: FontWeight.bold))
+                            ],
+                          ),
+                        )),
+                  ),
+                  // GestureDetector(
+                  //   onTap: () {
+                  //     // Get.to(() => const DeliveredOrders());
+                  //   },
+                  //   child: Card(
+                  //       shape: RoundedRectangleBorder(
+                  //           borderRadius: BorderRadius.circular(10)),
+                  //       child: SizedBox(
+                  //         height: 150,
+                  //         width: 150,
+                  //         child: Column(
+                  //           mainAxisAlignment: MainAxisAlignment.center,
+                  //           children: [
+                  //             // const Icon(Icons.shopping_bag, size: 50),
+                  //             // const SizedBox(
+                  //             //   height: 10,
+                  //             // ),
+                  //             // const Text("Delivered",
+                  //             //     style:
+                  //             //         TextStyle(fontWeight: FontWeight.bold)),
+                  //             // const SizedBox(
+                  //             //   height: 10,
+                  //             // ),
+                  //             // Text("(${controller.deliveredOrders.length})",
+                  //             //     style: const TextStyle(
+                  //             //         fontWeight: FontWeight.bold))
+                  //           ],
+                  //         ),
+                  //       )),
+                  // ),
                 ],
               ),
             ),

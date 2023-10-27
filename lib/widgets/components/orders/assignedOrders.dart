@@ -2,19 +2,20 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
-
+import '../../../controllers/mapcontroller.dart';
 import '../../../controllers/ordercontroller.dart';
 import '../../../statics/appcolors.dart';
 
-class ProcessingOrders extends StatefulWidget {
-  const ProcessingOrders({super.key});
+class AssignedOrders extends StatefulWidget {
+  const AssignedOrders({super.key});
 
   @override
-  State<ProcessingOrders> createState() => _ProcessingOrdersState();
+  State<AssignedOrders> createState() => _AssignedOrdersState();
 }
 
-class _ProcessingOrdersState extends State<ProcessingOrders> {
+class _AssignedOrdersState extends State<AssignedOrders> {
   final OrderController orderController = Get.find();
+  final MapController mapController = Get.find();
   var items;
 
   final storage = GetStorage();
@@ -32,7 +33,7 @@ class _ProcessingOrdersState extends State<ProcessingOrders> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-            title: const Text("Processing Orders"),
+            title: const Text("Assigned Orders"),
             leading: IconButton(
               onPressed: () {
                 Get.back();
@@ -42,11 +43,11 @@ class _ProcessingOrdersState extends State<ProcessingOrders> {
             )),
         body: GetBuilder<OrderController>(builder: (controller) {
           return ListView.builder(
-              itemCount: controller.processingOrders != null
-                  ? controller.processingOrders.length
+              itemCount: controller.assignedOrders != null
+                  ? controller.assignedOrders.length
                   : 0,
               itemBuilder: (context, index) {
-                items = controller.processingOrders[index];
+                items = controller.assignedOrders[index];
                 return Card(
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10)),
@@ -114,6 +115,59 @@ class _ProcessingOrdersState extends State<ProcessingOrders> {
                                 ],
                               ),
                             ),
+                            const SizedBox(width: 10),
+                            Expanded(
+                                child: Card(
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(12)),
+                              color: muted[300],
+                              child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Center(
+                                  child: TextButton(
+                                    child: const Text("Add to transit",
+                                        style: TextStyle(
+                                            color: defaultTextColor2,
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 15)),
+                                    onPressed: () {
+                                      controller.updateOrderToInTransit(
+                                        controller.assignedOrders[index]['id']
+                                            .toString(),
+                                        uToken,
+                                        controller.assignedOrders[index]['cart']
+                                            .toString(),
+                                        controller.assignedOrders[index]
+                                                ['quantity']
+                                            .toString(),
+                                        controller.assignedOrders[index]
+                                                ['price']
+                                            .toString(),
+                                        controller.assignedOrders[index]
+                                            ['category'],
+                                        controller.assignedOrders[index]['size']
+                                            .toString(),
+                                        controller.assignedOrders[index]
+                                            ['payment_method'],
+                                        controller.assignedOrders[index]
+                                            ['drop_off_location_lat'],
+                                        controller.assignedOrders[index]
+                                            ['drop_off_location_lng'],
+                                        controller.assignedOrders[index]
+                                            ['delivery_method'],
+                                        controller.assignedOrders[index]
+                                            ['unique_order_code'],
+                                        controller.assignedOrders[index]['user']
+                                            .toString(),
+                                        mapController.userLatitude.toString(),
+                                        mapController.userLongitude.toString(),
+                                      );
+                                      //   somehtml
+                                    },
+                                  ),
+                                ),
+                              ),
+                            ))
                           ],
                         ),
                       ],

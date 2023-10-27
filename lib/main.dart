@@ -7,6 +7,7 @@ import 'package:get_storage/get_storage.dart';
 
 import 'controllers/localnotification_controller.dart';
 import 'controllers/logincontroller.dart';
+import 'controllers/mapcontroller.dart';
 import 'controllers/notificationcontroller.dart';
 import 'controllers/ordercontroller.dart';
 import 'controllers/profilecontroller.dart';
@@ -21,6 +22,7 @@ void main() async {
   Get.put(ProfileController());
   Get.put(OrderController());
   Get.put(StoreItemsController());
+  Get.put(MapController());
   Get.put(NotificationController());
   LocalNotificationController().initNotification();
   runApp(const MyApp());
